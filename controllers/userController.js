@@ -1,20 +1,20 @@
 const { ObjectId } = require('mongoose').Types;
-const {Users} = require('../models');
+const {User} = require('../models');
 
 const usersController = {
     
     //create 
     createUser({body}, res) {
-        Users.create(body)
+        User.create(body)
         .then(dbUsersData => res.json(dbUsersData))
         .catch(err => res.status(400).json(err));
     },
 
     //get All
     getUsers(req, res) {
-        Users.find({})
-        .populate({path: 'thoughts', select: '-__v'})
-        .populate({path: 'friends', select: '-__v'})
+        User.find({})
+        //.populate({path: 'thoughts', select: '-__v'})
+        //.populate({path: 'friends', select: '-__v'})
         .select('-__v')
     
         .then(dbUsersData => res.json(dbUsersData))
@@ -69,7 +69,6 @@ const usersController = {
         .catch(err => res.status(400).json(err));
     },
 
-    //delete user
     addFriend({params}, res) {
         Users.findOneAndUpdate({_id: params.id}, {$push: { friends: params.friendId}}, {new: true})
         .populate({path: 'friends', select: ('-__v')})
